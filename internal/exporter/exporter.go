@@ -3,7 +3,6 @@ package exporter
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -11,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/sysdigdan/starlink_exporter/pkg/spacex.com/api/device"
+	"github.com/idoqo/starlink_exporter/pkg/spacex.com/api/device"
 )
 
 const (
@@ -246,6 +245,12 @@ var (
 		"Percentage of Absolute fraction per wedge section",
 		[]string{"wedge", "wedge_name"}, nil,
 	)
+
+	// WiFi info
+	wifiConnectedClientsCount = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "wifi", "connected_clients_count"),
+		"Number of connected WiFi clients",
+		nil, nil)
 )
 
 // Exporter collects Starlink stats from the Dish and exports them using
@@ -343,6 +348,9 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- dishProlongedObstructionValid
 	ch <- dishWedgeFractionObstructionRatio
 	ch <- dishWedgeAbsFractionObstructionRatio
+
+	// WiFi
+	ch <- wifiConnectedClientsCount
 }
 
 // Collect fetches the stats from Starlink dish and delivers them
@@ -353,6 +361,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	ok := e.collectDishStatus(ch)
 	ok = ok && e.collectDishObstructions(ch)
 	ok = ok && e.collectDishAlerts(ch)
+	ok = ok && e.collectWifiMetrics(ch)
 
 	if ok {
 		ch <- prometheus.MustNewConstMetric(
@@ -366,6 +375,28 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 			dishUp, prometheus.GaugeValue, 0.0,
 		)
 	}
+}
+
+func (e *Exporter) collectWifiMetrics(ch chan<- prometheus.Metric) bool {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
+	defer cancel()
+	req := &device.Request{
+		Request: &device.Request_WifiGetClients{},
+	}
+	resp, err := e.Client.Handle(ctx, req)
+	if err != nil {
+		log.Errorf("failed to collect status from dish: %s", err.Error())
+		return false
+	}
+
+	clients := resp.GetWifiGetClients().GetClients()
+	for _, c := range clients {
+		log.Println(c)
+	}
+	ch <- prometheus.MustNewConstMetric(
+		wifiConnectedClientsCount, prometheus.GaugeValue, float64(len(clients)),
+	)
+	return true
 }
 
 func (e *Exporter) collectDishStatus(ch chan<- prometheus.Metric) bool {
@@ -512,7 +543,7 @@ func (e *Exporter) collectDishObstructions(ch chan<- prometheus.Metric) bool {
 		dishProlongedObstructionValid, prometheus.GaugeValue, flool(obstructions.GetAvgProlongedObstructionValid()),
 	)
 
-	for i, v := range obstructions.GetWedgeFractionObstructed() {
+	/*for i, v := range obstructions.GetWedgeFractionObstructed() {
 		ch <- prometheus.MustNewConstMetric(
 			dishWedgeFractionObstructionRatio, prometheus.GaugeValue, float64(v),
 			strconv.Itoa(i),
@@ -526,7 +557,7 @@ func (e *Exporter) collectDishObstructions(ch chan<- prometheus.Metric) bool {
 			strconv.Itoa(i),
 			fmt.Sprintf("%d_to_%d", i*30, (i+1)*30),
 		)
-	}
+	}*/
 
 	return true
 }
