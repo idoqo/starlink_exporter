@@ -236,16 +236,6 @@ var (
 		"Average prolonged obstruction is valid",
 		nil, nil,
 	)
-	dishWedgeFractionObstructionRatio = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "dish", "wedge_fraction_obstruction_ratio"),
-		"Percentage of obstruction per wedge section",
-		[]string{"wedge", "wedge_name"}, nil,
-	)
-	dishWedgeAbsFractionObstructionRatio = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "dish", "wedge_abs_fraction_obstruction_ratio"),
-		"Percentage of Absolute fraction per wedge section",
-		[]string{"wedge", "wedge_name"}, nil,
-	)
 
 	// WiFi info
 	wifiConnectedClientsCount = prometheus.NewDesc(
@@ -378,8 +368,6 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- dishProlongedObstructionDurationSeconds
 	ch <- dishProlongedObstructionIntervalSeconds
 	ch <- dishProlongedObstructionValid
-	ch <- dishWedgeFractionObstructionRatio
-	ch <- dishWedgeAbsFractionObstructionRatio
 
 	// WiFi
 	ch <- wifiConnectedClientsCount
@@ -581,22 +569,6 @@ func (e *Exporter) collectDishObstructions(ch chan<- prometheus.Metric) bool {
 	ch <- prometheus.MustNewConstMetric(
 		dishProlongedObstructionValid, prometheus.GaugeValue, flool(obstructions.GetAvgProlongedObstructionValid()),
 	)
-
-	/*for i, v := range obstructions.GetWedgeFractionObstructed() {
-		ch <- prometheus.MustNewConstMetric(
-			dishWedgeFractionObstructionRatio, prometheus.GaugeValue, float64(v),
-			strconv.Itoa(i),
-			fmt.Sprintf("%d_to_%d", i*30, (i+1)*30),
-		)
-	}
-
-	for i, v := range obstructions.GetWedgeAbsFractionObstructed() {
-		ch <- prometheus.MustNewConstMetric(
-			dishWedgeAbsFractionObstructionRatio, prometheus.GaugeValue, float64(v),
-			strconv.Itoa(i),
-			fmt.Sprintf("%d_to_%d", i*30, (i+1)*30),
-		)
-	}*/
 
 	return true
 }

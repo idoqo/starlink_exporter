@@ -73,10 +73,16 @@ scrape_configs
 ## Exported Metrics:
 
 ```text
+# HELP starlink_dish_alert_install_pending Installation Pending
+# TYPE starlink_dish_alert_install_pending gauge
+# HELP starlink_dish_alert_is_heating Is Heating
+# TYPE starlink_dish_alert_is_heating gauge
 # HELP starlink_dish_alert_mast_not_near_vertical Status of mast position
 # TYPE starlink_dish_alert_mast_not_near_vertical gauge
 # HELP starlink_dish_alert_motors_stuck Status of motor stuck
 # TYPE starlink_dish_alert_motors_stuck gauge
+# HELP starlink_dish_alert_roaming Status of roaming
+# TYPE starlink_dish_alert_roaming gauge
 # HELP starlink_dish_alert_slow_eth_speeds Status of ethernet
 # TYPE starlink_dish_alert_slow_eth_speeds gauge
 # HELP starlink_dish_alert_thermal_shutdown Status of thermal shutdown
@@ -85,65 +91,71 @@ scrape_configs
 # TYPE starlink_dish_alert_thermal_throttle gauge
 # HELP starlink_dish_alert_unexpected_location Status of location
 # TYPE starlink_dish_alert_unexpected_location gauge
-# HELP starlink_dish_backup_beam connected to backup beam
-# TYPE starlink_dish_backup_beam gauge
+# HELP starlink_dish_anti_rollback_version Starlink Dish Anti Rollback Version.
+# TYPE starlink_dish_anti_rollback_version counter
+# HELP starlink_dish_boot_count Starlink Dish boot count.
+# TYPE starlink_dish_boot_count counter
 # HELP starlink_dish_bore_sight_azimuth_deg azimuth in degrees
 # TYPE starlink_dish_bore_sight_azimuth_deg gauge
 # HELP starlink_dish_bore_sight_elevation_deg elevation in degrees
 # TYPE starlink_dish_bore_sight_elevation_deg gauge
-# HELP starlink_dish_cell_id Cell ID dish is located in
-# TYPE starlink_dish_cell_id gauge
 # HELP starlink_dish_currently_obstructed Status of view of the sky
 # TYPE starlink_dish_currently_obstructed gauge
+# HELP starlink_dish_dish_stow_requested stow requested
+# TYPE starlink_dish_dish_stow_requested gauge
 # HELP starlink_dish_downlink_throughput_bytes Amount of bandwidth in bytes per second download
 # TYPE starlink_dish_downlink_throughput_bytes gauge
+# HELP starlink_dish_eth_speed ethernet speed
+# TYPE starlink_dish_eth_speed untyped
 # HELP starlink_dish_first_nonempty_slot_seconds Seconds to next non empty slot
 # TYPE starlink_dish_first_nonempty_slot_seconds gauge
 # HELP starlink_dish_fraction_obstruction_ratio Percentage of obstruction
 # TYPE starlink_dish_fraction_obstruction_ratio gauge
+# HELP starlink_dish_gps_sats Number of GPS Sats.
+# TYPE starlink_dish_gps_sats gauge
+# HELP starlink_dish_gps_valid GPS Status.
+# TYPE starlink_dish_gps_valid gauge
 # HELP starlink_dish_info Running software versions and IDs of hardware
 # TYPE starlink_dish_info gauge
-# HELP starlink_dish_initial_gateway_id initial gateway id
-# TYPE starlink_dish_initial_gateway_id gauge
-# HELP starlink_dish_initial_satellite_id initial satellite id
-# TYPE starlink_dish_initial_satellite_id gauge
-# HELP starlink_dish_last_24h_obstructed_seconds Number of seconds view of sky has been obstructed in the last 24hours
-# TYPE starlink_dish_last_24h_obstructed_seconds gauge
+# HELP starlink_dish_info_debug Debug Dish Info
+# TYPE starlink_dish_info_debug gauge
+# HELP starlink_dish_is_dev Starlink Dish is Dev.
+# TYPE starlink_dish_is_dev gauge
+# HELP starlink_dish_is_hit Starlink Dish is Hit.
+# TYPE starlink_dish_is_hit gauge
+# HELP starlink_dish_outage_did_switch Starlink Dish Outage Information
+# TYPE starlink_dish_outage_did_switch gauge
+# HELP starlink_dish_outage_duration Starlink Dish Outage Information
+# TYPE starlink_dish_outage_duration gauge
 # HELP starlink_dish_pop_ping_drop_ratio Percent of pings dropped
 # TYPE starlink_dish_pop_ping_drop_ratio gauge
 # HELP starlink_dish_pop_ping_latency_seconds Latency of connection in seconds
 # TYPE starlink_dish_pop_ping_latency_seconds gauge
-# HELP starlink_dish_pop_rack_id pop rack id
-# TYPE starlink_dish_pop_rack_id gauge
 # HELP starlink_dish_prolonged_obstruction_duration_seconds Average in seconds of prolonged obstructions
 # TYPE starlink_dish_prolonged_obstruction_duration_seconds gauge
 # HELP starlink_dish_prolonged_obstruction_interval_seconds Average prolonged obstruction interval in seconds
 # TYPE starlink_dish_prolonged_obstruction_interval_seconds gauge
+# HELP starlink_dish_prolonged_obstruction_valid Average prolonged obstruction is valid
+# TYPE starlink_dish_prolonged_obstruction_valid gauge
 # HELP starlink_dish_scrape_duration_seconds Time to scrape metrics from starlink dish
 # TYPE starlink_dish_scrape_duration_seconds gauge
-# HELP starlink_dish_snr Signal strength of the connection
-# TYPE starlink_dish_snr gauge
-# HELP starlink_dish_state The current dishState of the Dish (Unknown, Booting, Searching, Connected).
-# TYPE starlink_dish_state gauge
-# HELP starlink_dish_time_to_slot_end_seconds Seconds left on current slot
-# TYPE starlink_dish_time_to_slot_end_seconds gauge
+# HELP starlink_dish_software_partitions_equal Starlink Dish Software Partitions Equal.
+# TYPE starlink_dish_software_partitions_equal gauge
 # HELP starlink_dish_up Was the last query of Starlink dish successful.
 # TYPE starlink_dish_up gauge
 # HELP starlink_dish_uplink_throughput_bytes Amount of bandwidth in bytes per second upload
 # TYPE starlink_dish_uplink_throughput_bytes gauge
 # HELP starlink_dish_uptime_seconds Dish running time
-# TYPE starlink_dish_uptime_seconds gauge
+# TYPE starlink_dish_uptime_seconds counter
 # HELP starlink_dish_valid_seconds Unknown
-# TYPE starlink_dish_valid_seconds gauge
-# HELP starlink_dish_wedge_abs_fraction_obstruction_ratio Percentage of Absolute fraction per wedge section
-# TYPE starlink_dish_wedge_abs_fraction_obstruction_ratio gauge
-# HELP starlink_dish_wedge_fraction_obstruction_ratio Percentage of obstruction per wedge section
-# TYPE starlink_dish_wedge_fraction_obstruction_ratio gauge
+# TYPE starlink_dish_valid_seconds counter
+# HELP starlink_wifi_connected_clients_count Number of connected WiFi clients
+# TYPE starlink_wifi_connected_clients_count gauge
+# HELP starlink_wifi_connected_clients_info Connected Clients Info
+# TYPE starlink_wifi_connected_clients_info gauge
 ```
 
 ## Example Grafana Dashboard:
-
-https://grafana.com/grafana/dashboards/14337
 
 <p align="center">
 	<img src="https://github.com/danopstech/starlink_exporter/raw/main/.docs/assets/screenshot.jpg" width="95%">
