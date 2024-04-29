@@ -156,7 +156,8 @@ scrape_configs
 ```
 
 ## Example Grafana Dashboard:
+You can import the current dashboard from ()
 
 <p align="center">
-	<img src="https://github.com/danopstech/starlink_exporter/raw/main/.docs/assets/screenshot.jpg" width="95%">
+	<img src="https://github.com/idoqo/starlink_exporter/raw/main/.docs/assets/dashboard-screenshot.png" width="95%">
 </p>
