@@ -16,6 +16,9 @@ format:	# Formats Go files
 build: # Build exporter binary
 	go build -o ./dist/starlink_exporter ./cmd/starlink_exporter/main.go
 
+docker: Build multi-platform docker image
+	docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag ghcr.io/idoqo/starlink_exporter:latest .
+
 genproto: # Generate proto files (thanks to github.com/b0ch3nski/go-starlink)
 	$(foreach bin,$(REQ_GEN_DEPS),$(if $(shell which $(bin)),,$(error "Please install '$(bin)'")))
 

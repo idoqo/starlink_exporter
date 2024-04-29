@@ -1,0 +1,36 @@
+services:
+  starlink_exporter:
+    image: "ghcr.io/idoqo/starlink_exporter:latest"
+    restart: always
+    ports:
+      - "9817:9817"
+
+  prometheus:
+    image: "docker.io/prom/prometheus:latest"
+    restart: always
+    user: "root"
+    ports:
+      - "9090:9090"
+    volumes:
+      - type: bind
+        source: ./config/prometheus/prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+      - type: bind
+        source: ./data/prometheus
+        target: /prometheus
+
+  grafana:
+    image: "docker.io/grafana/grafana:latest"
+    restart: always
+    user: "root"
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_LOG_CONSOLE_LEVEL=warn
+    volumes:
+      - type: bind
+        source: ./data/grafana
+        target: /var/lib/grafana
+      - type: bind
+        source: ./config/grafana/provisioning
+        target: /etc/grafana/provisioning/

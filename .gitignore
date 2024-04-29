@@ -3,3 +3,7 @@ dist/
 make.sh
 .idea/
 .dccache
+demo/data/prometheus/*
+!demo/data/prometheus/.gitkeep
+demo/data/grafana/*
+!demo/data/grafana/.gitkeep

@@ -1,22 +1,23 @@
 <p align="center">
-  <img alt="logo" src="https://github.com/danopstech/starlink_exporter/raw/main/.docs/assets/logo.jpg" height="150" />
+  <img alt="logo" src="https://github.com/idoqo/starlink_exporter/raw/main/.docs/assets/logo.jpg" height="100" />
   <h3 align="center">Starlink Prometheus Exporter</h3>
 </p>
 
 ---
 A [Starlink](https://www.starlink.com/) exporter for Prometheus. Not affiliated with or acting on behalf of Starlink(™)
 
-[![goreleaser](https://github.com/danopstech/starlink_exporter/actions/workflows/release.yaml/badge.svg)](https://github.com/danopstech/starlink_exporter/actions/workflows/release.yaml)
-[![build](https://github.com/danopstech/starlink_exporter/actions/workflows/build.yaml/badge.svg)](https://github.com/danopstech/starlink_exporter/actions/workflows/build.yaml)
-[![License](https://img.shields.io/github/license/danopstech/starlink_exporter)](/LICENSE)
-[![Release](https://img.shields.io/github/release/danopstech/starlink_exporter.svg)](https://github.com/danopstech/starlink_exporter/releases/latest)
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/danopstech/starlink_exporter)
+[![goreleaser](https://github.com/idoqo/starlink_exporter/actions/workflows/release.yaml/badge.svg)](https://github.com/idoqo/starlink_exporter/actions/workflows/release.yaml)
+[![build](https://github.com/idoqo/starlink_exporter/actions/workflows/build.yaml/badge.svg)](https://github.com/idoqo/starlink_exporter/actions/workflows/build.yaml)
+[![License](https://img.shields.io/github/license/idoqo/starlink_exporter)](/LICENSE)
+[![Release](https://img.shields.io/github/release/idoqo/starlink_exporter.svg)](https://github.com/idoqo/starlink_exporter/releases/latest)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/idoqo/starlink_exporter)
 ![os/arch](https://img.shields.io/badge/os%2Farch-amd64-yellow)
 ![os/arch](https://img.shields.io/badge/os%2Farch-arm64-yellow)
 ![os/arch](https://img.shields.io/badge/os%2Farch-armv7-yellow)
-[![Go Report Card](https://goreportcard.com/badge/github.com/danopstech/starlink_exporter)](https://goreportcard.com/report/github.com/danopstech/starlink_exporter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/idoqo/starlink_exporter)](https://goreportcard.com/report/github.com/idoqo/starlink_exporter)
 
-If you would like a pre-packaged system to monitor you Starlink system please check out https://github.com/danopstech/starlink. It includes this exporter, speedtest_exporter, blackbox_exporter, Grafana and Prometheus in one Docker Compose file.
+If you would like to see this in action in your Starlink network, you can run the docker-compose file at https://github.com/idoqo/starlink_exporter/tree/main/demo/docker-compose.yml. 
+It includes this exporter, Grafana and Prometheus in one Docker Compose file.
 
 ## Usage:
 
@@ -27,8 +28,10 @@ If you would like a pre-packaged system to monitor you Starlink system please ch
 ```bash
 $ ./starlink_exporter --help
 Usage of starlink_exporter
-  -address string
+  -dish-address string
         IP address and port to reach dish (default "192.168.100.1:9200")
+  -router-address string
+        IP address and port to reach router (default "192.168.1.1:9000")
   -port string
         listening port to expose metrics on (default "9817")
 
@@ -44,15 +47,15 @@ For pre-built binaries please take a look at the [releases](https://github.com/d
 
 ### Docker
 
-Docker Images can be found at [GitHub Container Registry](https://github.com/orgs/danopstech/packages/container/package/starlink_exporter) & [Dockerhub](https://hub.docker.com/r/danopstech/starlink_exporter).
+Docker Images can be found at [GitHub Container Registry](https://github.com/orgs/idoqo/packages/container/package/starlink_exporter).
 
 Example:
 ```bash
-docker pull ghcr.io/danopstech/starlink_exporter:latest
+docker pull ghcr.io/idoqo/starlink_exporter:latest
 
 docker run \
   -p 9817:9817 \
-  ghcr.io/danopstech/starlink_exporter:latest [flags]
+  ghcr.io/idoqo/starlink_exporter:latest [flags]
 ```
 
 ### Setup Prometheus to scrape `starlink_exporter`

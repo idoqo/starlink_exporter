@@ -1,6 +1,6 @@
 module github.com/idoqo/starlink_exporter
 
-go 1.18
+go 1.22
 
 require (
 	github.com/prometheus/client_golang v1.12.1
