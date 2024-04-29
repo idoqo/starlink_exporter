@@ -1,37 +1,32 @@
 {
   "__inputs": [
     {
-      "name": "DS_GRAFANACLOUD-DWILLCOCKS-PROM",
-      "label": "grafanacloud-dwillcocks-prom",
+      "name": "DS_PROMETHEUS",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
     }
   ],
+  "__elements": {},
   "__requires": [
     {
       "type": "panel",
-      "id": "ae3e-plotly-panel",
-      "name": "Plotly panel",
-      "version": "0.3.3"
-    },
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
+      "id": "barchart",
+      "name": "Bar chart",
       "version": ""
     },
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.5.5"
+      "version": "10.4.2"
     },
     {
       "type": "panel",
-      "id": "graph",
-      "name": "Graph",
+      "id": "logs",
+      "name": "Logs",
       "version": ""
     },
     {
@@ -45,13 +40,22 @@
       "id": "stat",
       "name": "Stat",
       "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
     }
   ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -60,106 +64,107 @@
       }
     ]
   },
-  "description": "Starlink dish metrics",
   "editable": true,
-  "gnetId": 14337,
-  "graphTooltip": 1,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
   "id": null,
-  "iteration": 1620812833887,
-  "links": [
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Starlink Debug",
-      "tooltip": "",
-      "type": "link",
-      "url": "http://192.168.100.1/support/debug"
-    },
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Starlink Statistics",
-      "tooltip": "",
-      "type": "link",
-      "url": "http://192.168.100.1/support/statistics"
-    }
-  ],
+  "links": [],
   "panels": [
     {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "10.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "max(starlink_dish_info) by (country_code, device_id, hardware_version, software_version)",
+          "format": "table",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Device Info",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "device_id": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "country_code": "Country Code",
+              "device_id": "Device ID",
+              "hardware_version": "Hardware Version",
+              "software_version": "Software Version"
+            }
+          }
+        }
+      ],
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "rgb(245, 245, 245)",
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "Unknown",
-              "to": "",
-              "type": 1,
-              "value": "0"
-            },
-            {
-              "from": "",
-              "id": 2,
-              "text": "Connected",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            },
-            {
-              "from": "",
-              "id": 3,
-              "text": "Searching",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 4,
-              "text": "Booting",
-              "to": "",
-              "type": 1,
-              "value": "3"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "orange",
+                "color": "purple",
                 "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              },
-              {
-                "color": "yellow",
-                "value": 12
-              },
-              {
-                "color": "#EAB839",
-                "value": 22
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 0,
+        "h": 4,
+        "w": 6,
+        "x": 12,
         "y": 0
       },
-      "id": 34,
+      "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -172,259 +177,37 @@
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.5.5",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
-          "exemplar": true,
-          "expr": "starlink_wifi_connected_clients_info{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Connected Clients",
-      "type": "stat"
-    },
-    {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(194, 194, 194)",
-            "mode": "fixed"
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 2,
-        "y": 0
-      },
-      "id": 41,
-      "interval": "1m",
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_uptime_seconds{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "starlink_dish_uptime_seconds{instance=\"$instance\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Uptime",
       "type": "stat"
     },
     {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(194, 194, 194)",
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "string"
-        },
-        "overrides": []
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
-      "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 4,
-        "y": 0
-      },
-      "id": 46,
-      "interval": "1m",
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_cell_id{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Cell ID",
-      "type": "stat"
-    },
-    {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(194, 194, 194)",
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "string"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 6,
-        "y": 0
-      },
-      "id": 47,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_initial_gateway_id{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Gateway ID",
-      "type": "stat"
-    },
-    {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(194, 194, 194)",
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "string"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 8,
-        "y": 0
-      },
-      "id": 48,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_initial_satellite_id",
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Satellite ID",
-      "type": "stat"
-    },
-    {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -443,22 +226,20 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "s"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 10,
+        "h": 4,
+        "w": 6,
+        "x": 18,
         "y": 0
       },
-      "id": 51,
-      "interval": "3s",
+      "id": 1,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -468,28 +249,37 @@
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.5.5",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
-          "exemplar": true,
-          "expr": "starlink_dish_last_24h_obstructed_seconds{instance=\"$DishID\"}",
-          "format": "time_series",
-          "interval": "",
-          "legendFormat": "24h_obstructed_seconds",
-          "refId": "A"
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "starlink_wifi_connected_clients_count{instance=\"$instance\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "24h Obstructed Time",
-      "transformations": [],
+      "title": "Connected Clients",
       "type": "stat"
     },
     {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -497,20 +287,18 @@
           },
           "mappings": [
             {
-              "from": "",
-              "id": 1,
-              "text": "False",
-              "to": "",
-              "type": 1,
-              "value": "0"
-            },
-            {
-              "from": "",
-              "id": 2,
-              "text": "True",
-              "to": "",
-              "type": 1,
-              "value": "1"
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "False"
+                },
+                "1": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "True"
+                }
+              },
+              "type": "value"
             }
           ],
           "thresholds": {
@@ -530,13 +318,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 3,
+        "h": 4,
+        "w": 6,
         "x": 12,
-        "y": 0
+        "y": 4
       },
-      "id": 50,
-      "interval": "3s",
+      "id": 10,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -549,54 +336,44 @@
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.5.5",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
-          "exemplar": true,
-          "expr": "starlink_dish_currently_obstructed{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "Obstructed",
-          "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_backup_beam{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Backup Beam",
-          "refId": "B"
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "starlink_dish_currently_obstructed{instance=\"$instance\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
         }
       ],
+      "title": "Obstructed",
       "type": "stat"
     },
     {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "False",
-              "to": "",
-              "type": 1,
-              "value": "0"
-            },
-            {
-              "from": "",
-              "id": 2,
-              "text": "True",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -609,21 +386,21 @@
                 "value": 1
               }
             ]
-          }
+          },
+          "unit": "bool"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 9,
-        "x": 15,
-        "y": 0
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 4
       },
-      "id": 13,
-      "interval": "15",
+      "id": 9,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -633,771 +410,355 @@
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.5.5",
+      "pluginVersion": "10.4.2",
       "targets": [
         {
-          "exemplar": true,
-          "expr": "starlink_dish_alert_slow_eth_speeds{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "Slow Ethernet",
-          "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_alert_mast_not_near_vertical{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Mast Not Near Vertical",
-          "refId": "B"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_alert_motors_stuck{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Motor Stuck",
-          "refId": "C"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_alert_thermal_throttle{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Thernal Throttle",
-          "refId": "D"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_alert_thermal_shutdown{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Thermal Shutdown",
-          "refId": "E"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_alert_unexpected_location{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Unexpected Location",
-          "refId": "F"
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "starlink_dish_alert_thermal_throttle{instance=\"$instance\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
         }
       ],
+      "title": "Thermal Throttle",
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 2,
       "gridPos": {
-        "h": 14,
-        "w": 18,
+        "h": 10,
+        "w": 12,
         "x": 0,
-        "y": 2
+        "y": 8
       },
-      "hiddenSeries": false,
+      "id": 2,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "10.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "starlink_wifi_connected_clients_info{instance=\"$instance\", name!=\"Controller\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Connected Clients Info",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Mbps",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Download"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(250, 5, 210)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Latency"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(0, 157, 245)",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Latency"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Upload"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(233, 255, 0)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
       "id": 8,
       "interval": "1s",
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:116",
-          "alias": "Download",
-          "color": "rgb(250, 5, 210)"
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        {
-          "$$hashKey": "object:287",
-          "alias": "Latency",
-          "color": "rgb(0, 157, 245)",
-          "fill": 0,
-          "fillGradient": 0,
-          "yaxis": 2
-        },
-        {
-          "$$hashKey": "object:3966",
-          "alias": "Upload",
-          "color": "rgb(233, 255, 0)"
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "10.4.2",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "starlink_dish_uplink_throughput_bytes{instance=\"$DishID\"} / 1000000 * -1",
+          "expr": "starlink_dish_uplink_throughput_bytes{instance=\"$instance\"} / 1000000 * -1",
           "instant": false,
           "interval": "",
           "legendFormat": "Upload",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "starlink_dish_downlink_throughput_bytes{instance=\"$DishID\"} /1000000",
+          "expr": "starlink_dish_downlink_throughput_bytes{instance=\"$instance\"} /1000000",
           "hide": false,
           "interval": "",
           "legendFormat": "Download",
+          "range": true,
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "avg_over_time(starlink_dish_pop_ping_latency_seconds{instance=\"$DishID\"}[5m])",
+          "expr": "avg_over_time(starlink_dish_pop_ping_latency_seconds{instance=\"$instance\"}[5m])",
           "hide": false,
           "interval": "",
           "legendFormat": "Latency",
+          "range": true,
           "refId": "C"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Tail",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:300",
-          "decimals": null,
-          "format": "short",
-          "label": "Mbps",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:301",
-          "format": "s",
-          "label": "Latency",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": 0
-      }
-    },
-    {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "max": 9,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 5
-              },
-              {
-                "color": "yellow",
-                "value": 6
-              },
-              {
-                "color": "green",
-                "value": 8
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 18,
-        "y": 2
-      },
-      "id": 19,
-      "interval": "1s",
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_snr{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "SNR",
-          "refId": "A"
-        }
-      ],
-      "title": "Current SNR",
-      "type": "gauge"
-    },
-    {
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 0.6
-              },
-              {
-                "color": "orange",
-                "value": 0.75
-              },
-              {
-                "color": "red",
-                "value": 0.9
-              }
-            ]
-          },
-          "unit": "percentunit"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 21,
-        "y": 2
-      },
-      "id": 43,
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_pop_ping_drop_ratio{instance=\"$DishID\"}",
-          "interval": "",
-          "legendFormat": "",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "title": "Current Ping Drop Rate",
-      "type": "gauge"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Backup Beam"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      "fill": 1,
-      "fillGradient": 5,
-      "gridPos": {
-        "h": 7,
-        "w": 9,
-        "x": 0,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 49,
-      "interval": "1s",
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:2618",
-          "alias": "First Nonempty Slot",
-          "color": "#F2495C"
-        },
-        {
-          "$$hashKey": "object:3086",
-          "alias": "Backup Beam",
-          "bars": true,
-          "color": "#FF9830",
-          "lines": false,
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_time_to_slot_end_seconds{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Slot End",
-          "refId": "C"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_first_nonempty_slot_seconds{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "First Nonempty Slot",
-          "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_backup_beam{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Backup Beam",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": "10m",
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Slot Timers",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:2590",
-          "format": "s",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:2591",
-          "decimals": 0,
-          "format": "string",
-          "label": null,
-          "logBase": 1,
-          "max": "1",
-          "min": "0",
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": true,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 3,
-      "gridPos": {
-        "h": 7,
-        "w": 9,
-        "x": 9,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 26,
-      "interval": "1s",
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "hideZero": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:1642",
-          "alias": "Drop",
-          "color": "#F2495C",
-          "yaxis": 2
-        },
-        {
-          "$$hashKey": "object:413",
-          "alias": "Obstructed",
-          "bars": true,
-          "color": "#FF9830",
-          "lines": false,
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "avg_over_time(starlink_dish_snr{instance=\"$DishID\"}[1m])",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "SNR",
-          "refId": "C"
-        },
-        {
-          "exemplar": true,
-          "expr": "avg_over_time(starlink_dish_pop_ping_drop_ratio{instance=\"$DishID\"}[10s])",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Drop",
-          "refId": "B"
-        },
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_currently_obstructed{instance=\"$DishID\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Obstructed",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": "10m",
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "SNR and Pop Ping Drop Percentage",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:235",
-          "decimals": 0,
-          "format": "short",
-          "label": "SNR",
-          "logBase": 1,
-          "max": "10",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:236",
-          "format": "percentunit",
-          "label": "Drop Percentage",
-          "logBase": 1,
-          "max": "1",
-          "min": "0",
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": true,
-        "alignLevel": 0
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 5,
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 18,
-        "y": 18
-      },
-      "hiddenSeries": false,
-      "id": 4,
-      "interval": "3s",
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": false
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:853",
-          "alias": "24h_obstructed_seconds",
-          "color": "#E02F44"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "starlink_dish_last_24h_obstructed_seconds{instance=\"$DishID\"}",
-          "format": "time_series",
-          "interval": "",
-          "legendFormat": "24h_obstructed_seconds",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": "24h",
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "24h Obstructed Time",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:668",
-          "decimals": 0,
-          "format": "s",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:669",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "Speed Tests",
+      "type": "timeseries"
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 27,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
       {
-        "allValue": "*",
         "current": {},
-        "datasource": "${DS_GRAFANACLOUD-DWILLCOCKS-PROM}",
-        "definition": "label_values(starlink_dish_up, instance)",
-        "description": null,
-        "error": null,
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(starlink_dish_up,instance)",
+        "description": "Exporter instance to query",
         "hide": 0,
         "includeAll": false,
-        "label": "Dish ID",
+        "label": "Instance",
         "multi": false,
-        "name": "DishID",
+        "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(starlink_dish_up, instance)",
-          "refId": "StandardVariableQuery"
+          "qryType": 1,
+          "query": "label_values(starlink_dish_up,instance)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-6h",
     "to": "now"
   },
-  "timepicker": {
-    "hidden": false,
-    "nowDelay": "",
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m"
-    ]
-  },
-  "timezone": "",
-  "title": "Starlink",
-  "uid": "GG3mnflGz",
-  "version": 42
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Starlink Overview",
+  "uid": "edk806zxqdcsga",
+  "version": 8,
+  "weekStart": ""
 }
