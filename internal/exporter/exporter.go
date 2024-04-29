@@ -15,8 +15,9 @@ import (
 
 const (
 	// DishAddress to reach Starlink dish ip:port
-	DishAddress = "192.168.100.1:9200"
-	namespace   = "starlink"
+	DishAddress   = "192.168.100.1:9200"
+	RouterAddress = "192.168.1.1:9000"
+	namespace     = "starlink"
 )
 
 var (
@@ -256,14 +257,17 @@ var (
 // Exporter collects Starlink stats from the Dish and exports them using
 // the prometheus metrics package.
 type Exporter struct {
-	Conn        *grpc.ClientConn
-	Client      device.DeviceClient
-	DishID      string
-	CountryCode string
+	Conn         *grpc.ClientConn
+	RouterConn   *grpc.ClientConn
+	Client       device.DeviceClient
+	RouterClient device.DeviceClient
+	DishID       string
+	RouterID     string
+	CountryCode  string
 }
 
 // New returns an initialized Exporter.
-func New(address string) (*Exporter, error) {
+func New(address string, routerAddress string) (*Exporter, error) {
 	ctx, connCancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer connCancel()
 	conn, err := grpc.DialContext(ctx, address, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
@@ -281,11 +285,29 @@ func New(address string) (*Exporter, error) {
 		return nil, fmt.Errorf("could not collect inital information from dish: %s", err.Error())
 	}
 
+	routerConn, err := grpc.DialContext(ctx, routerAddress, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		return nil, fmt.Errorf("error creating underlying gRPC connection to starlink router: %s", err.Error())
+	}
+
+	routerCtx, HandleRouterCancel := context.WithTimeout(context.Background(), time.Second*1)
+	defer HandleRouterCancel()
+	routerResp, err := device.NewDeviceClient(routerConn).Handle(routerCtx, &device.Request{
+		Request: &device.Request_GetDeviceInfo{},
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("could not collect inital information from router: %s", err.Error())
+	}
+
 	return &Exporter{
-		Conn:        conn,
-		Client:      device.NewDeviceClient(conn),
-		DishID:      resp.GetGetDeviceInfo().GetDeviceInfo().GetId(),
-		CountryCode: resp.GetGetDeviceInfo().GetDeviceInfo().GetCountryCode(),
+		Conn:         conn,
+		RouterConn:   routerConn,
+		Client:       device.NewDeviceClient(conn),
+		RouterClient: device.NewDeviceClient(routerConn),
+		DishID:       resp.GetGetDeviceInfo().GetDeviceInfo().GetId(),
+		RouterID:     routerResp.GetGetDeviceInfo().GetDeviceInfo().GetId(),
+		CountryCode:  resp.GetGetDeviceInfo().GetDeviceInfo().GetCountryCode(),
 	}, nil
 }
 
@@ -383,16 +405,13 @@ func (e *Exporter) collectWifiMetrics(ch chan<- prometheus.Metric) bool {
 	req := &device.Request{
 		Request: &device.Request_WifiGetClients{},
 	}
-	resp, err := e.Client.Handle(ctx, req)
+	resp, err := e.RouterClient.Handle(ctx, req)
 	if err != nil {
-		log.Errorf("failed to collect status from dish: %s", err.Error())
+		log.Errorf("failed to collect metric from router: %s", err.Error())
 		return false
 	}
 
 	clients := resp.GetWifiGetClients().GetClients()
-	for _, c := range clients {
-		log.Println(c)
-	}
 	ch <- prometheus.MustNewConstMetric(
 		wifiConnectedClientsCount, prometheus.GaugeValue, float64(len(clients)),
 	)

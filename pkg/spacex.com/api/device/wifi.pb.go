@@ -7,12 +7,14 @@
 package device
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
-	reflect "reflect"
+
 	telemetron "github.com/idoqo/starlink_exporter/pkg/spacex.com/api/telemetron"
-	sync "sync"
 )
 
 const (

@@ -7,10 +7,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/idoqo/starlink_exporter/internal/exporter"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/idoqo/starlink_exporter/internal/exporter"
 )
 
 const (
@@ -19,18 +20,20 @@ const (
 
 func main() {
 	port := flag.String("port", "9817", "listening port to expose metrics on")
-	address := flag.String("address", exporter.DishAddress, "IP address and port to reach dish")
+	dishAddress := flag.String("dish-address", exporter.DishAddress, "IP address and port to reach dish")
+	routerAddress := flag.String("router-address", exporter.RouterAddress, "IP address and port to reach router")
 	flag.Parse()
 
-	exporter, err := exporter.New(*address)
+	exp, err := exporter.New(*dishAddress, *routerAddress)
 	if err != nil {
 		log.Fatalf("could not start exporter: %s", err.Error())
 	}
-	defer exporter.Conn.Close()
-	log.Infof("dish id: %s", exporter.DishID)
+	defer exp.Conn.Close()
+	log.Infof("dish id: %s", exp.DishID)
+	log.Infof("router id: %s", exp.RouterID)
 
 	r := prometheus.NewRegistry()
-	r.MustRegister(exporter)
+	r.MustRegister(exp)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte(`<html>
@@ -44,7 +47,7 @@ func main() {
 	})
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		switch exporter.Conn.GetState() {
+		switch exp.Conn.GetState() {
 		case 0, 2:
 			// Idle or Ready
 			w.WriteHeader(http.StatusOK)
@@ -55,7 +58,7 @@ func main() {
 			// Shutdown
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		_, _ = fmt.Fprintf(w, "%s\n", exporter.Conn.GetState())
+		_, _ = fmt.Fprintf(w, "%s\n", exp.Conn.GetState())
 	})
 
 	http.Handle(metricsPath, promhttp.HandlerFor(r, promhttp.HandlerOpts{}))

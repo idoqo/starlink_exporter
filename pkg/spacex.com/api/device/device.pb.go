@@ -7,13 +7,15 @@
 package device
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
+
 	unlock "github.com/idoqo/starlink_exporter/pkg/spacex.com/api/device/services/unlock"
 	status "github.com/idoqo/starlink_exporter/pkg/spacex.com/api/status"
-	sync "sync"
 )
 
 const (
