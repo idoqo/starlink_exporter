@@ -252,6 +252,16 @@ var (
 		prometheus.BuildFQName(namespace, "wifi", "connected_clients_count"),
 		"Number of connected WiFi clients",
 		nil, nil)
+
+	wifiConnectedClientsInfo = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "wifi", "connected_clients_info"),
+		"Connected Clients Info",
+		[]string{
+			"name",
+			"domain",
+			"mac_address",
+			"ip_address"}, nil,
+	)
 )
 
 // Exporter collects Starlink stats from the Dish and exports them using
@@ -373,6 +383,7 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 
 	// WiFi
 	ch <- wifiConnectedClientsCount
+	ch <- wifiConnectedClientsInfo
 }
 
 // Collect fetches the stats from Starlink dish and delivers them
@@ -415,6 +426,15 @@ func (e *Exporter) collectWifiMetrics(ch chan<- prometheus.Metric) bool {
 	ch <- prometheus.MustNewConstMetric(
 		wifiConnectedClientsCount, prometheus.GaugeValue, float64(len(clients)),
 	)
+	for _, client := range clients {
+		ch <- prometheus.MustNewConstMetric(
+			wifiConnectedClientsInfo, prometheus.GaugeValue, 1.00,
+			fmt.Sprint(client.GetName()),
+			fmt.Sprint(client.GetDomain()),
+			fmt.Sprint(client.GetMacAddress()),
+			fmt.Sprint(client.GetIpAddress()),
+		)
+	}
 	return true
 }
 
